@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <Adafruit_LSM6DSOX.h>
+#include <Adafruit_LIS3MDL.h>
 
 // Replace with your network credentials
 const char* ssid = "Doritos";
@@ -9,83 +10,50 @@ const char* password = "GTPDEastPoint@1346";
 // Create an instance of the server
 WiFiServer server(80);
 Adafruit_LSM6DSOX lsm6dsox;
+Adafruit_LIS3MDL lis3mdl;    // LIS3MDL object for magnetometer
 WiFiClient client;
 unsigned long previousMillis = 0;
 const long interval = 2000;
 
 void setup() {
   Serial.begin(115200);
-  
+  while (!Serial) {
+        ; // Wait for serial port to connect. Needed for native USB.
+  }
+  Serial.println("Initialized!");
+
   // Initialize the IMU
   if (!lsm6dsox.begin_I2C()) {
     Serial.println("Failed to find LSM6DSOX chip");
     while (1) { delay(10); }
   }
 
-
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  // Initialize LIS3MDL (Magnetometer)
+  if (!lis3mdl.begin_I2C()) {
+    Serial.println("Couldn't find LIS3MDL sensor.");
+    while (1);
   }
-  
-  Serial.println();
-  Serial.print("Connected to WiFi. IP address: ");
-  Serial.println(WiFi.localIP());
-
-  // Define a route for the root URL
-  // server.on("/", []() {
-  //   server.send(200, "text/html", "<h1>Hello, ESP32!</h1>");
-  // });
-
-  // Start the server
-  server.begin();
-  Serial.println("HTTP server started");
+  Serial.println("LIS3MDL found!");
 }
 
 void loop() {
-  // Check for a client connection
-  if (!client.connected()) {
-    client = server.available();
-    if (client) {
-      Serial.println("New client connected");
-      // Send initial HTML response
-      sendResponse();
-    }
-  } else {
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= interval) {
-      previousMillis = currentMillis;
-      sendResponse();  // Update data every 'interval' milliseconds
-    }
-  }
+  sensors_event_t accel, gyro, temp;
+  lsm6dsox.getEvent(&accel, &gyro, &temp);
+    
+  Serial.print(accel.acceleration.x); Serial.print(",");
+  Serial.print(accel.acceleration.y); Serial.print(",");
+  Serial.print(accel.acceleration.z); Serial.print(",");  
 
-  // Handle client disconnection
-  if (!client.connected()) {
-    Serial.println("Client disconnected");
-    client.stop();
-  }
-}
+  Serial.print(gyro.gyro.x); Serial.print(",");
+  Serial.print(gyro.gyro.y); Serial.print(",");
+  Serial.print(gyro.gyro.z); Serial.print(",");
 
-void sendResponse() {
-    sensors_event_t accel, gyro, temp;
-    lsm6dsox.getEvent(&accel, &gyro, &temp);
-      
-    String jsonResponse = String("{") +
-      "\"acceleration\":{\"x\":" + String(accel.acceleration.x) +
-      ",\"y\":" + String(accel.acceleration.y) +
-      ",\"z\":" + String(accel.acceleration.z) + "}," +
-      "\"gyroscope\":{\"x\":" + String(gyro.gyro.x) +
-      ",\"y\":" + String(gyro.gyro.y) +
-      ",\"z\":" + String(gyro.gyro.z) + "}" +
-      "}";
-      
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: application/json");
-    client.println("Connection: close");
-    client.println();
-    client.print(jsonResponse);
+
+  sensors_event_t mag_event;
+  lis3mdl.getEvent(&mag_event);
+  Serial.print(mag_event.magnetic.x); Serial.print(",");
+  Serial.print(mag_event.magnetic.y); Serial.print(",");
+  Serial.println(mag_event.magnetic.z); 
+
+  delay(200);
 }
