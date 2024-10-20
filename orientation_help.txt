@@ -1,0 +1,1 @@
+References:Adafruit tutorial: https://learn.adafruit.com/how-to-fuse-motion-sensor-data-into-ahrs-orientation-euler-quaternions/overviewMotionCal fix in MacOS: https://github.com/PaulStoffregen/MotionCal/issues/11#issuecomment-2412937251Small fix in code:#include <Adafruit_LSM6DSOX.h>Adafruit_LSM6DSOX lsm6ds;
