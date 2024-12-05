@@ -79,9 +79,9 @@ def calculate_heading(yaw):
         heading_value_norm = 0
     else:
         if heading_value_norm > 180:
-            heading_value_norm = 340
+            heading_value_norm = 330
         elif heading_value_norm < 180:
-            heading_value_norm = 20
+            heading_value_norm = 30
 
     return heading_value_norm
 

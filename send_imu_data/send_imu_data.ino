@@ -18,7 +18,7 @@
 
 const char* ssid = "kinani";
 const char* password = "password123";
-const char* serverName = "http://192.168.148.60:5000/data"; 
+const char* serverName = "http://192.168.228.60:5000/data"; 
 Adafruit_Sensor *accelerometer, *gyroscope, *magnetometer;
 
 // pick your filter! slower == better quality output
