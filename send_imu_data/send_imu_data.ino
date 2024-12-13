@@ -16,15 +16,12 @@
 #define PRINT_EVERY_N_UPDATES 10
 
 
-const char* ssid = "kinani";
-const char* password = "password123";
-const char* serverName = "http://192.168.228.60:5000/data"; 
+const char* ssid = "<SSID>";
+const char* password = "<password>";
+const char* serverName = "http://<raspi_ip>:<port>/data"; 
 Adafruit_Sensor *accelerometer, *gyroscope, *magnetometer;
 
-// pick your filter! slower == better quality output
-//Adafruit_NXPSensorFusion filter; // slowest
-//Adafruit_Madgwick filter;  // faster than NXP
-Adafruit_Mahony filter;  // fastest/smalleset
+Adafruit_Mahony filter; 
 
 Adafruit_LIS3MDL lis3mdl;
 Adafruit_LSM6DSOX lsm6ds;
@@ -109,6 +106,7 @@ void loop() {
   cal.calibrate(mag);
   cal.calibrate(accel);
   cal.calibrate(gyro);
+
   // Gyroscope needs to be converted from Rad/s to Degree/s
   // the rest are not unit-important
   gx = gyro.gyro.x * SENSORS_RADS_TO_DPS;
@@ -125,7 +123,7 @@ void loop() {
   yaw = filter.getYaw();
 
   Serial.println("IMU Data");
-  // Serial.println("Roll: "+String(roll));
+  Serial.println("Roll: "+String(roll));
   Serial.println("Pitch: "+String(pitch));
   Serial.println("Yaw: "+String(yaw));
 
@@ -146,5 +144,4 @@ void loop() {
       http.end();
   }
   Serial.print("Took "); Serial.print(millis()-timestamp); Serial.println(" ms");
-  // delay(500); 
 }
