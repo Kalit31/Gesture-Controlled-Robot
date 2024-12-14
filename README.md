@@ -46,11 +46,19 @@ The Sphero RVR moves based on the gestures, Hooray!
 
 ### Quick Demo
 
-[Our Robot](./media/vid1.mp4) 
+1. Our Robot setup
 
-[Forward/Backward motion](./media/vid2.mp4)
+https://github.com/user-attachments/assets/b2583e4c-fe79-4111-b279-b20a61a7d23a
 
-[Side-to-Side motion](./media/vid3.mp4)
+
+2. Forward/Backward motion
+   
+https://github.com/user-attachments/assets/be1899cc-5eb8-4dae-8b9f-bae8cbdc8f22
+
+3. Side-to-Side motion
+   
+https://github.com/user-attachments/assets/30ef15b6-0112-41a2-b745-eb03999624d4
+
 
 ## Team 
 - [Kalit Inani](https://github.com/Kalit31)
